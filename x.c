@@ -59,6 +59,7 @@ static void zoom(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
+static void toggle_fullscreen(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -326,6 +327,23 @@ void
 ttysend(const Arg *arg)
 {
 	ttywrite(arg->s, strlen(arg->s), 1);
+}
+
+void toggle_fullscreen(const Arg *dummy)
+{
+	XEvent ev;
+	memset(&ev, 0, sizeof(ev));
+	ev.type = ClientMessage;
+
+	XClientMessageEvent* cm = &ev.xclient;
+	cm->window = xw.win;
+	cm->message_type = XInternAtom(xw.dpy, "_NET_WM_STATE", 0);
+	cm->format = 32;
+	cm->data.l[0] = 2; // toggle
+	cm->data.l[1] = XInternAtom(xw.dpy, "_NET_WM_STATE_FULLSCREEN", 0);
+
+	XSendEvent(xw.dpy, DefaultRootWindow(xw.dpy), False,
+		SubstructureNotifyMask | SubstructureRedirectMask, &ev);
 }
 
 int
