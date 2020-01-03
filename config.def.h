@@ -5,6 +5,8 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
+// to find all available fonts:
+// fc-list :fontformat=TrueType -f "%{family}\n" | sort -u | less
 static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
 static int borderpx = 2;
 
